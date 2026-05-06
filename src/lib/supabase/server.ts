@@ -1,6 +1,12 @@
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { getPublicEnvOrThrow } from "../env";
+
+interface CookieToSet {
+  name: string;
+  value: string;
+  options: CookieOptions;
+}
 
 /**
  * Server-side Supabase client. Reads/writes the auth cookies that come in
@@ -15,7 +21,7 @@ export function getServerSupabase() {
       getAll() {
         return cookieStore.getAll();
       },
-      setAll(toSet) {
+      setAll(toSet: CookieToSet[]) {
         try {
           for (const { name, value, options } of toSet) {
             cookieStore.set(name, value, options);

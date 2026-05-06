@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { PUBLIC_ENV } from "@/lib/env";
 
 const PUBLIC_PATHS = ["/login", "/register", "/auth/callback"];
+
+interface CookieToSet {
+  name: string;
+  value: string;
+  options: CookieOptions;
+}
 
 /**
  * Refresh Supabase auth cookies on every request and redirect unauthenticated
@@ -21,7 +27,7 @@ export async function middleware(req: NextRequest) {
         getAll() {
           return req.cookies.getAll();
         },
-        setAll(toSet) {
+        setAll(toSet: CookieToSet[]) {
           for (const { name, value, options } of toSet) {
             res.cookies.set(name, value, options);
           }
