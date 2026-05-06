@@ -55,6 +55,7 @@ enum Category {
   CLOTHING
   VACATIONS
   STOCK_MISC
+  PAYBOX_TRANSFER
   OTHER
 }
 

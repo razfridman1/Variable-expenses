@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { ExpenseRow } from "@/components/ExpenseRow";
 import { EmptyState } from "@/components/EmptyState";
+import { ExpenseEditDialog } from "@/components/ExpenseEditDialog";
 import { api, ApiError } from "@/lib/api";
 import { dayRange, weekRange, monthRange, yearRange } from "@/lib/dates";
 import { formatMoney, formatDate, formatMonth } from "@/lib/format";
@@ -64,6 +65,7 @@ export default function HistoryPage() {
   const [anchor, setAnchor] = useState<Date>(new Date());
   const [data, setData] = useState<ListRes | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<ExpenseDTO | null>(null);
 
   const range = useMemo(() => rangeFor(kind, anchor), [kind, anchor]);
 
@@ -202,7 +204,12 @@ export default function HistoryPage() {
         ) : data && data.items.length > 0 ? (
           <ul className="divide-y divide-border px-1">
             {data.items.map((e) => (
-              <ExpenseRow key={e.id} expense={e} onDelete={handleDelete} />
+              <ExpenseRow
+                key={e.id}
+                expense={e}
+                onEdit={setEditing}
+                onDelete={handleDelete}
+              />
             ))}
           </ul>
         ) : (
@@ -212,6 +219,12 @@ export default function HistoryPage() {
           />
         )}
       </div>
+
+      <ExpenseEditDialog
+        expense={editing}
+        onClose={() => setEditing(null)}
+        onSaved={() => void load()}
+      />
     </AppShell>
   );
 }

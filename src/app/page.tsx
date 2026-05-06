@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
@@ -8,33 +8,44 @@ import { StatCard } from "@/components/StatCard";
 import { BudgetProgress } from "@/components/BudgetProgress";
 import { ExpenseRow } from "@/components/ExpenseRow";
 import { EmptyState } from "@/components/EmptyState";
+import { ExpenseEditDialog } from "@/components/ExpenseEditDialog";
 import { api, ApiError } from "@/lib/api";
 import { formatMoney } from "@/lib/format";
 import { toast } from "@/components/Toaster";
-import type { DashboardDTO } from "@/types/dto";
+import type { DashboardDTO, ExpenseDTO } from "@/types/dto";
 
 export default function DashboardPage() {
   const [data, setData] = useState<DashboardDTO | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<ExpenseDTO | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      const res = await api.get<DashboardDTO>("/api/dashboard");
+      setData(res);
+    } catch (err) {
+      if (err instanceof ApiError && err.status !== 401) {
+        toast.error(err.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const res = await api.get<DashboardDTO>("/api/dashboard");
-        if (alive) setData(res);
-      } catch (err) {
-        if (err instanceof ApiError && err.status !== 401) {
-          toast.error(err.message);
-        }
-      } finally {
-        if (alive) setLoading(false);
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, []);
+    void load();
+  }, [load]);
+
+  async function handleDelete(id: string) {
+    if (!confirm("למחוק את ההוצאה?")) return;
+    try {
+      await api.delete(`/api/expenses/${id}`);
+      toast.success("נמחק");
+      void load();
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : "שגיאה");
+    }
+  }
 
   return (
     <AppShell>
@@ -114,7 +125,12 @@ export default function DashboardPage() {
           ) : data && data.recent.length > 0 ? (
             <ul className="divide-y divide-border px-1">
               {data.recent.map((e) => (
-                <ExpenseRow key={e.id} expense={e} />
+                <ExpenseRow
+                  key={e.id}
+                  expense={e}
+                  onEdit={setEditing}
+                  onDelete={handleDelete}
+                />
               ))}
             </ul>
           ) : (
@@ -130,6 +146,12 @@ export default function DashboardPage() {
           )}
         </div>
       </section>
+
+      <ExpenseEditDialog
+        expense={editing}
+        onClose={() => setEditing(null)}
+        onSaved={() => void load()}
+      />
     </AppShell>
   );
 }
