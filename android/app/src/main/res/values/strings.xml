@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">מעקב הוצאות</string>
+    <string name="title_activity_main">מעקב הוצאות</string>
+    <string name="package_name">com.razfridman.variableexpenses</string>
+    <string name="custom_url_scheme">com.razfridman.variableexpenses</string>
+</resources>
