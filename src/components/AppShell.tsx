@@ -3,17 +3,18 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Home, Plus, Clock, BarChart3, Wallet, LogOut, Loader2 } from "lucide-react";
+import { Home, Plus, Clock, BarChart3, Wallet, Sparkles, LogOut, Loader2 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { useAuth } from "./AuthProvider";
 import { cn } from "@/lib/cn";
 
 const NAV = [
-  { href: "/",          label: "ראשי",     icon: Home },
-  { href: "/add",       label: "הוסף",     icon: Plus },
-  { href: "/history",   label: "היסטוריה", icon: Clock },
-  { href: "/analytics", label: "תובנות",   icon: BarChart3 },
-  { href: "/budget",    label: "תקציב",    icon: Wallet },
+  { href: "/",            label: "ראשי",     icon: Home },
+  { href: "/add",         label: "הוסף",     icon: Plus },
+  { href: "/history",     label: "היסטוריה", icon: Clock },
+  { href: "/analytics",   label: "תובנות",   icon: BarChart3 },
+  { href: "/budget",      label: "תקציב",    icon: Wallet },
+  { href: "/bar-mitzvah", label: "בר מצווה", icon: Sparkles },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -75,7 +76,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         className="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-surface/95 backdrop-blur
                    border-t border-border pb-[env(safe-area-inset-bottom,0)]"
       >
-        <ul className="grid grid-cols-5 max-w-3xl mx-auto">
+        <ul className="grid grid-cols-6 max-w-3xl mx-auto">
           {NAV.map(({ href, label, icon: Icon }) => {
             const active =
               href === "/" ? pathname === "/" : pathname.startsWith(href);

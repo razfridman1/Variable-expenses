@@ -1,4 +1,4 @@
-import type { Category } from "@prisma/client";
+import type { BarMitzvahCategory, Category } from "@prisma/client";
 
 export interface ExpenseDTO {
   id: string;
@@ -46,4 +46,19 @@ export interface YearlyAnalyticsDTO {
   total: number;
   byMonth: Array<{ year: number; month: number; total: number }>;
   byCategory: CategoryBreakdownItem[];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Bar Mitzvah
+// ─────────────────────────────────────────────────────────────────────────────
+export interface BarMitzvahExpenseDTO {
+  id: string;
+  vendor: string;
+  category: BarMitzvahCategory;
+  customCategory: string | null;
+  amountPaid: number;
+  amountRemaining: number;
+  paymentDate: string; // ISO
+  note: string | null;
+  createdAt: string;
 }

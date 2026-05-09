@@ -1,5 +1,9 @@
-import type { Expense, MonthlyBudget } from "@prisma/client";
-import type { ExpenseDTO, MonthlyBudgetDTO } from "@/types/dto";
+import type { BarMitzvahExpense, Expense, MonthlyBudget } from "@prisma/client";
+import type {
+  BarMitzvahExpenseDTO,
+  ExpenseDTO,
+  MonthlyBudgetDTO,
+} from "@/types/dto";
 
 export function serializeExpense(e: Expense): ExpenseDTO {
   return {
@@ -19,5 +23,21 @@ export function serializeBudget(b: MonthlyBudget): MonthlyBudgetDTO {
     year: b.year,
     month: b.month,
     amount: Number(b.amount),
+  };
+}
+
+export function serializeBarMitzvahExpense(
+  e: BarMitzvahExpense,
+): BarMitzvahExpenseDTO {
+  return {
+    id: e.id,
+    vendor: e.vendor,
+    category: e.category,
+    customCategory: e.customCategory,
+    amountPaid: Number(e.amountPaid),
+    amountRemaining: Number(e.amountRemaining),
+    paymentDate: e.paymentDate.toISOString(),
+    note: e.note,
+    createdAt: e.createdAt.toISOString(),
   };
 }
